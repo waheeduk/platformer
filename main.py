@@ -4,15 +4,14 @@ import time
 #constants
 SCREEN_HEIGHT = 600 
 SCREEN_WIDTH = 1200
-SCREEN_TITLE = "THE INVINCIBLES"
+SCREEN_TITLE = "THE GAME"
 TILE_SCALING = 1
-ROBOT_SCALING = 0.5
 GRID_SIZE = 64
 
 #player constants
 PLAYER_MOVEMENT_SPEED = 5
 PLAYER_JUMP_SPEED = 10
-GRAVITY = 0.1
+GRAVITY = 0.5
 START_X = 64
 START_Y = (12*GRID_SIZE) +32
 
@@ -31,36 +30,42 @@ class PlayerCharacter(arcade.Sprite):
 	def __init__(self):
 		#set up parent class
 		super().__init__()
-		self.cur_texture_index = 0
+
+		self.cur_texture = 0
 		self.scale = TILE_SCALING
 
-		#track character state
-		self.jumping = 0 
-		self.climbing = 0
-		self.dashing = 0
 
 		#load textures
 		#main directory where art is held
 		main_path = "art/PNG/Players/Player Blue/playerBlue"
 
 		#load textures for idle
+		self.idle_texture = arcade.load_texture(f"{main_path}_stand.png")
 
 		#load textures for running/walking
 		self.run_textures = [ ]
-		for i in range(1, 6):
-			texture = f"{main_path}_walk{i}.png"
+		for i in range(6):
+			texture = arcade.load_texture(f"{main_path}_walk{i}.png")
 			self.run_textures.append(texture)
-
-		#create idle textures
 		
+		#set initial texture
+		self.texture = self.idle_texture
+
 		#create hitbox
+		self.set_hit_box(self.texture.hit_box_points)		
 	
 	def update_animation(self, delta_time: float = 1/60):
+		
+		#idle animation
+		if self.change_x == 0:
+			self.texture = self.idle_texture
+			return
+		
 		#running animation
-		self.cur_texture_index += 1
-		if self.cur_texture_index >5:
-			self.cur_texture_index = 0
-		self.texture = self.run_textures[self.cur_texture_index]
+		self.cur_texture += 1
+		if self.cur_texture > 5:
+			self.cur_texture = 0
+		self.texture = self.run_textures[self.cur_texture]
 
 
 class MyGame(arcade.Window):
@@ -72,6 +77,13 @@ class MyGame(arcade.Window):
 		#call parent class
 		super().__init__(SCREEN_WIDTH,SCREEN_HEIGHT, SCREEN_TITLE)
 		arcade.set_background_color(arcade.csscolor.AZURE)
+
+		#track current state of what key is pressed
+		self.left_pressed = False
+		self.right_pressed = False
+		self.up_pressed = False
+		self.down_pressed = False
+		self.jump_needs_reset = False
 
 		#lists to keep track of sprites
 		self.wall_list = None
@@ -87,6 +99,9 @@ class MyGame(arcade.Window):
 		#keeps track of scroll margins
 		self.view_bottom = 0
 		self.view_left = 0
+
+		#load sounds
+		self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
 	def setup(self):
 		#creates the sprite lists
@@ -146,11 +161,7 @@ class MyGame(arcade.Window):
 		self.moving_platform_list = arcade.tilemap.process_layer(map_object = my_map,
 																 layer_name = moving_platforms_layer_name,
 																 scaling = TILE_SCALING)
-		#generates moving platform movement
-		for sprite in self.moving_platform_list:
-			sprite.boundary_left = 28 * GRID_SIZE
-			sprite.boundary_right = 34 * GRID_SIZE
-			sprite.change_x = 2 * TILE_SCALING
+
 		
 		if my_map.background_color:
 			arcade.set_background_color(my_map.background_color)
@@ -161,33 +172,59 @@ class MyGame(arcade.Window):
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
 
+	def process_keychange(self):
+		# Process up/down
+		if self.up_pressed and not self.down_pressed:
+			if self.physics_engine.is_on_ladder():
+				self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+			elif self.physics_engine.can_jump() and not self.jump_needs_reset:
+				self.player_sprite.change_y = PLAYER_JUMP_SPEED
+				self.jump_needs_reset = True
+				arcade.play_sound(self.jump_sound)
+		elif self.down_pressed and not self.up_pressed:
+			if self.physics_engine.is_on_ladder():
+				self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+
+		# Process up/down when on a ladder and no movement
+		if self.physics_engine.is_on_ladder():
+			if not self.up_pressed and not self.down_pressed:
+				self.player_sprite.change_y = 0
+			elif self.up_pressed and self.down_pressed:
+				self.player_sprite.change_y = 0
+
+		# Process left/right
+		if self.right_pressed and not self.left_pressed:
+			self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+		elif self.left_pressed and not self.right_pressed:
+			self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+		else:
+			self.player_sprite.change_x = 0
 
 	def on_key_press(self, key, modifiers):
 		"""called whenever a key is pressed"""
 		if key == arcade.key.UP or key == arcade.key.W:
-			if self.physics_engine.is_on_ladder():
-				self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-			elif self.physics_engine.can_jump():
-				self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+			self.up_pressed = True
 		elif key == arcade.key.DOWN or key == arcade.key.S:
-			if self.physics_engine.is_on_ladder():
-				self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+			self.down_pressed = True
 		elif key == arcade.key.LEFT or key == arcade.key.A:
-			self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+			self.left_pressed = True
 		elif key == arcade.key.RIGHT or key == arcade.key.D:
-			self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+			self.right_pressed = True
+
+		self.process_keychange()
 
 	def on_key_release(self, key, modifiers):
 		"""Called when the user releases a key. """
 
 		if key == arcade.key.UP or key == arcade.key.W:
-			self.player_sprite.change_y = 0
+			self.up_pressed = False
+			self.jump_needs_reset = False
 		elif key == arcade.key.DOWN or key == arcade.key.S:
-			self.player_sprite.change_y = 0
+			self.down_pressed = False
 		elif key == arcade.key.LEFT or key == arcade.key.A:
-			self.player_sprite.change_x = 0
+			self.left_pressed = False
 		elif key == arcade.key.RIGHT or key == arcade.key.D:
-			self.player_sprite.change_x = 0
+			self.right_pressed = False
 
 	def on_draw(self):
 		"""render the screen"""
@@ -204,13 +241,27 @@ class MyGame(arcade.Window):
 
 		# Move the player with the physics engine
 		self.physics_engine.update()
+
+		# Update animations
+		if self.physics_engine.can_jump():
+			self.player_sprite.can_jump = False
+		else:
+			self.player_sprite.can_jump = True
+
+		if self.physics_engine.is_on_ladder() and not self.physics_engine.can_jump():
+			self.player_sprite.is_on_ladder = True
+			self.process_keychange()
+		else:
+			self.player_sprite.is_on_ladder = False
+			self.process_keychange()
+
+		self.player_list.update_animation(delta_time)
 	
 		# Track if we need to change the viewport
 
 		#check if player fell off map, this also works for the player falls in
 		#water, as the water level is always nine grid blocks above 0
 		if self.player_sprite.center_y < 9* GRID_SIZE:
-			time.sleep(1)
 			self.player_sprite.center_x = START_X
 			self.player_sprite.center_y = START_Y
 
