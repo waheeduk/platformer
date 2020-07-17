@@ -17,6 +17,7 @@ START_Y = (12*GRID_SIZE) +32
 
 STARTING_POINT = 0
 MOVING_PLATFORM_SPEED = 5
+UPDATES_PER_FRAME = 5
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -24,6 +25,8 @@ LEFT_VIEWPORT_MARGIN = 250
 RIGHT_VIEWPORT_MARGIN = 250
 BOTTOM_VIEWPORT_MARGIN = 50
 TOP_VIEWPORT_MARGIN = 100
+
+
 
 class PlayerCharacter(arcade.Sprite):
 	"""Player sprite"""
@@ -63,9 +66,9 @@ class PlayerCharacter(arcade.Sprite):
 		
 		#running animation
 		self.cur_texture += 1
-		if self.cur_texture > 5:
-			self.cur_texture = 0
-		self.texture = self.run_textures[self.cur_texture]
+		if self.cur_texture > 5 * UPDATES_PER_FRAME:
+			self.cur_texture = 1
+		self.texture = self.run_textures[self.cur_texture//UPDATES_PER_FRAME]
 
 
 class MyGame(arcade.Window):
