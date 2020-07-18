@@ -26,7 +26,15 @@ RIGHT_VIEWPORT_MARGIN = 250
 BOTTOM_VIEWPORT_MARGIN = 50
 TOP_VIEWPORT_MARGIN = 100
 
+RIGHT_FACING = 0
+LEFT_FACING = 1
 
+def load_texture_pair(filename):
+	"""load a texture pair"""
+	return [
+		arcade.load_texture(filename),
+		arcade.load_texture(filename, mirrored= True)
+	]
 
 class PlayerCharacter(arcade.Sprite):
 	"""Player sprite"""
@@ -34,41 +42,49 @@ class PlayerCharacter(arcade.Sprite):
 		#set up parent class
 		super().__init__()
 
+		#character faces right by default
+		self.character_face_direction = RIGHT_FACING
+
 		self.cur_texture = 0
 		self.scale = TILE_SCALING
-
 
 		#load textures
 		#main directory where art is held
 		main_path = "art/PNG/Players/Player Blue/playerBlue"
 
 		#load textures for idle
-		self.idle_texture = arcade.load_texture(f"{main_path}_stand.png")
+		self.idle_texture = load_texture_pair(f"{main_path}_stand.png")
 
 		#load textures for running/walking
 		self.run_textures = [ ]
 		for i in range(6):
-			texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+			texture = load_texture_pair(f"{main_path}_walk{i}.png")
 			self.run_textures.append(texture)
 		
-		#set initial texture
-		self.texture = self.idle_texture
+		#set initial texture, default idle, facing right
+		self.texture = self.idle_texture[0]
 
 		#create hitbox
 		self.set_hit_box(self.texture.hit_box_points)		
 	
 	def update_animation(self, delta_time: float = 1/60):
 		
+		#figure out if its right or left
+		if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
+			self.character_face_direction = LEFT_FACING
+		elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
+			self.character_face_direction = RIGHT_FACING
+
 		#idle animation
 		if self.change_x == 0:
-			self.texture = self.idle_texture
+			self.texture = self.idle_texture[self.character_face_direction]
 			return
 		
 		#running animation
 		self.cur_texture += 1
 		if self.cur_texture > 5 * UPDATES_PER_FRAME:
 			self.cur_texture = 1
-		self.texture = self.run_textures[self.cur_texture//UPDATES_PER_FRAME]
+		self.texture = self.run_textures[self.cur_texture//UPDATES_PER_FRAME][self.character_face_direction]
 
 
 class MyGame(arcade.Window):
