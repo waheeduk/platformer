@@ -7,6 +7,7 @@ SCREEN_WIDTH = 1200
 SCREEN_TITLE = "THE GAME"
 TILE_SCALING = 1
 GRID_SIZE = 64
+LASER_SCALING = 0.5
 
 #player constants
 PLAYER_MOVEMENT_SPEED = 5
@@ -15,6 +16,8 @@ PLAYER_DASH_SPEED = 20
 GRAVITY = 0.5
 START_X = 64
 START_Y = (12*GRID_SIZE) +32
+
+LASER_SPEED = 25
 
 STARTING_POINT = 0
 MOVING_PLATFORM_SPEED = 5
@@ -114,11 +117,13 @@ class MyGame(arcade.Window):
 		self.jump_needs_reset = False
 		self.dash_pressed = False
 		self.dash_needs_reset = False
+		self.shoot_pressed = False
 
 		#lists to keep track of sprites
 		self.wall_list = None
 		self.coin_list = None
 		self.player_list = None
+		self.bullet_list = None
 		self.background_list = None
 		self.ladder_list = None
 
@@ -136,6 +141,7 @@ class MyGame(arcade.Window):
 	def setup(self):
 		#creates the sprite lists
 		self.player_list = arcade.SpriteList()
+		self.bullet_list = arcade.SpriteList()
 		self.wall_list = arcade.SpriteList(use_spatial_hash=True)
 		self.background_list = arcade.SpriteList()
 		self.water_list = arcade.SpriteList()
@@ -238,6 +244,26 @@ class MyGame(arcade.Window):
 			self.player_sprite.change_x = -PLAYER_DASH_SPEED
 			reset_timer(self.dash_needs_reset, 5)
 
+		#process shooting
+		if self.shoot_pressed and self.left_pressed:
+			#creates laser
+			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
+			#position the laser
+			laser.center_x = self.player_sprite.center_x
+			laser.center_y = self.player_sprite.center_y
+			#gives laser speed and direction
+			laser.change_x = -LASER_SPEED
+			self.bullet_list.append(laser)
+		elif self.shoot_pressed:
+			#creates laser
+			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
+			#position the laser
+			laser.center_x = self.player_sprite.center_x
+			laser.center_y = self.player_sprite.center_y
+			#gives laser speed and direction
+			laser.change_x = LASER_SPEED
+			self.bullet_list.append(laser)
+
 	def on_key_press(self, key, modifiers):
 		"""called whenever a key is pressed"""
 		if key == arcade.key.UP or key == arcade.key.W:
@@ -250,6 +276,8 @@ class MyGame(arcade.Window):
 			self.right_pressed = True
 		elif key == arcade.key.SPACE:
 			self.dash_pressed = True
+		elif key == arcade.key.RETURN:
+			self.shoot_pressed = True
 
 		self.process_keychange()
 
@@ -267,6 +295,8 @@ class MyGame(arcade.Window):
 			self.right_pressed = False
 		elif key == arcade.key.SPACE:
 			self.dash_pressed = False
+		elif key == arcade.key.RETURN:
+			self.shoot_pressed = False
 
 	def on_draw(self):
 		"""render the screen"""
@@ -277,6 +307,7 @@ class MyGame(arcade.Window):
 		self.ladder_list.draw()
 		self.player_list.draw()
 		self.moving_platform_list.draw()
+		self.bullet_list.draw()
 
 	def on_update(self, delta_time):
 		""" Movement and game logic """
@@ -298,6 +329,8 @@ class MyGame(arcade.Window):
 			self.process_keychange()
 
 		self.player_list.update_animation(delta_time)
+
+		self.bullet_list.update()
 	
 		# Track if we need to change the viewport
 
