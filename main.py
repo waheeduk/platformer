@@ -11,6 +11,7 @@ GRID_SIZE = 64
 #player constants
 PLAYER_MOVEMENT_SPEED = 5
 PLAYER_JUMP_SPEED = 10
+PLAYER_DASH_SPEED = 20
 GRAVITY = 0.5
 START_X = 64
 START_Y = (12*GRID_SIZE) +32
@@ -35,6 +36,14 @@ def load_texture_pair(filename):
 		arcade.load_texture(filename),
 		arcade.load_texture(filename, mirrored= True)
 	]
+
+#call this function to reset timers for abilities like dash
+def reset_timer(item_being_reset, reset_time):
+	time_now = time.time()
+	if time.time() - time_now < reset_time:
+		item_being_reset = True
+	else:
+		item_being_reset =False
 
 class PlayerCharacter(arcade.Sprite):
 	"""Player sprite"""
@@ -103,6 +112,8 @@ class MyGame(arcade.Window):
 		self.up_pressed = False
 		self.down_pressed = False
 		self.jump_needs_reset = False
+		self.dash_pressed = False
+		self.dash_needs_reset = False
 
 		#lists to keep track of sprites
 		self.wall_list = None
@@ -219,6 +230,14 @@ class MyGame(arcade.Window):
 		else:
 			self.player_sprite.change_x = 0
 
+		#process dash
+		if self.dash_pressed and self.right_pressed and not self.dash_needs_reset:
+			self.player_sprite.change_x = PLAYER_DASH_SPEED
+			reset_timer(self.dash_needs_reset, 5)			
+		elif self.dash_pressed and self.left_pressed and not self.dash_needs_reset:
+			self.player_sprite.change_x = -PLAYER_DASH_SPEED
+			reset_timer(self.dash_needs_reset, 5)
+
 	def on_key_press(self, key, modifiers):
 		"""called whenever a key is pressed"""
 		if key == arcade.key.UP or key == arcade.key.W:
@@ -229,6 +248,8 @@ class MyGame(arcade.Window):
 			self.left_pressed = True
 		elif key == arcade.key.RIGHT or key == arcade.key.D:
 			self.right_pressed = True
+		elif key == arcade.key.SPACE:
+			self.dash_pressed = True
 
 		self.process_keychange()
 
@@ -244,6 +265,8 @@ class MyGame(arcade.Window):
 			self.left_pressed = False
 		elif key == arcade.key.RIGHT or key == arcade.key.D:
 			self.right_pressed = False
+		elif key == arcade.key.SPACE:
+			self.dash_pressed = False
 
 	def on_draw(self):
 		"""render the screen"""
