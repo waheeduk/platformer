@@ -358,6 +358,8 @@ class MyGame(arcade.Window):
 				laser.remove_from_sprite_lists()
 				print('laser removed')
 
+		#check to see if enemies were hit by player laser, in which case they are 
+		#destroyed
 		for laser in self.bullet_list:
 			enemy_hit_list = arcade.check_for_collision_with_list(laser, self.enemy_list)
 			if len(enemy_hit_list) > 0:
