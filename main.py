@@ -357,6 +357,14 @@ class MyGame(arcade.Window):
 			elif laser.center_x - 18 < self.view_left:
 				laser.remove_from_sprite_lists()
 				print('laser removed')
+
+		for laser in self.bullet_list:
+			enemy_hit_list = arcade.check_for_collision_with_list(laser, self.enemy_list)
+			if len(enemy_hit_list) > 0:
+				laser.remove_from_sprite_lists()
+				for enemy in enemy_hit_list:
+					enemy.remove_from_sprite_lists()
+				continue
 		
 		#make enemies patrol on platforms
 		#create invisible platforms in foreground, i.e. platforms we do not call in
