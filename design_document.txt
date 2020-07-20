@@ -10,3 +10,15 @@ Need to create objectives and collectibes
 Need to create timer and high score
 Need to create swim mechanic as bonus
 Need to refactor code
+
+enemies
+can create tile layer
+need to be able to patrol on platforms
+pseudocode:
+if anything underneath move left
+elif anything to left turn around and move right
+if moving right
+if anything underneath, continue
+elif anything to right, turn around,
+elif nothing underneath, turn around
+enemies also need to be able to shoot to allow parry mechanic

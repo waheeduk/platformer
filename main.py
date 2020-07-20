@@ -244,7 +244,7 @@ class MyGame(arcade.Window):
 			self.player_sprite.change_x = -PLAYER_DASH_SPEED
 			reset_timer(self.dash_needs_reset, 5)
 
-		#process shooting
+		#process shootinggit b
 		if self.shoot_pressed and self.left_pressed:
 			#creates laser
 			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
@@ -331,6 +331,15 @@ class MyGame(arcade.Window):
 		self.player_list.update_animation(delta_time)
 
 		self.bullet_list.update()
+
+		#remove lasers if they go offscreen to save memory
+		for laser in self.bullet_list:
+			if laser.center_x + 18 > self.view_left + SCREEN_WIDTH:
+				laser.remove_from_sprite_lists()
+				print('laser removed')
+			elif laser.center_x - 18 < self.view_left:
+				laser.remove_from_sprite_lists()
+				print('laser removed')
 	
 		# Track if we need to change the viewport
 
