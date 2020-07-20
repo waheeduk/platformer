@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="10" nextobjectid="1">
- <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="23" columns="0">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="24" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_05.png"/>
@@ -71,6 +71,9 @@
   <tile id="27">
    <image width="42" height="40" source="../art/PNG/Enemies/enemyFloating_1.png"/>
   </tile>
+  <tile id="28">
+   <image width="64" height="64" source="../art/PNG/Tiles/Blue tiles/tileBlue_03.png"/>
+  </tile>
  </tileset>
  <layer id="2" name="Platforms" width="128" height="128">
   <data encoding="base64" compression="zlib">
@@ -105,6 +108,11 @@
  <layer id="3" name="Breakable" width="128" height="128">
   <data encoding="base64" compression="zlib">
    eJztzgENAAAIA6BnsH9YY9xNSEACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADdMOwAAAAAAAAAAzy07ZQAT
+  </data>
+ </layer>
+ <layer id="10" name="Invisible Platforms" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJztyDENAAAIA7AZwb9NJCycJO3ZBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCfOT4AAAAAAAAAAAAAAN0CVuUAOw==
   </data>
  </layer>
  <layer id="4" name="Breaking" width="128" height="128">

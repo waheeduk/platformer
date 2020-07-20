@@ -19,6 +19,8 @@ START_Y = (12*GRID_SIZE) +32
 
 LASER_SPEED = 25
 
+ENEMY_PATROL_SPEED = 3
+
 STARTING_POINT = 0
 MOVING_PLATFORM_SPEED = 5
 UPDATES_PER_FRAME = 5
@@ -128,7 +130,6 @@ class MyGame(arcade.Window):
 		self.ladder_list = None
 
 		self.player_sprite = None
-
 		self.physics_engine = None 
 
 		#keeps track of scroll margins
@@ -146,7 +147,9 @@ class MyGame(arcade.Window):
 		self.background_list = arcade.SpriteList()
 		self.water_list = arcade.SpriteList()
 		self.ladder_list = arcade.SpriteList()
+		self.enemy_list = arcade.SpriteList()
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
+		self.invisible_platform_list = arcade.SpriteList()
 
 		#sets up the player and drops it at a location
 		self.player_sprite = PlayerCharacter()
@@ -162,11 +165,15 @@ class MyGame(arcade.Window):
 		platforms_layer_name = 'Platforms'
 		moving_platforms_layer_name = 'Moving Platforms'
 		ladders_layer_name = 'Ladders'
+		invisible_platform_layer_name = 'Invisible Platforms'
 
 		#layer containing background items
 		background_layer_name = 'Background'
 		#layer containing items that will cause death and a reset
 		water_layer_name = 'Water'
+
+		#layer containing enemies loaded in
+		enemy_layer_name = 'Enemies'
 
 		#read in tiled map
 		my_map = arcade.tilemap.read_tmx(map_name)
@@ -198,7 +205,16 @@ class MyGame(arcade.Window):
 																 layer_name = moving_platforms_layer_name,
 																 scaling = TILE_SCALING)
 
-		
+		#brings in enemies
+		self.enemy_list = arcade.tilemap.process_layer(map_object= my_map,
+														layer_name= enemy_layer_name,
+														scaling=TILE_SCALING)
+
+		#brings in platforms that pen in enemies
+		self.invisible_platform_list = arcade.tilemap.process_layer(map_object = my_map,
+																	layer_name= invisible_platform_layer_name,
+																	scaling=TILE_SCALING)
+
 		if my_map.background_color:
 			arcade.set_background_color(my_map.background_color)
 
@@ -244,7 +260,7 @@ class MyGame(arcade.Window):
 			self.player_sprite.change_x = -PLAYER_DASH_SPEED
 			reset_timer(self.dash_needs_reset, 5)
 
-		#process shootinggit b
+		#process shooting
 		if self.shoot_pressed and self.left_pressed:
 			#creates laser
 			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
@@ -308,6 +324,7 @@ class MyGame(arcade.Window):
 		self.player_list.draw()
 		self.moving_platform_list.draw()
 		self.bullet_list.draw()
+		self.enemy_list.draw()
 
 	def on_update(self, delta_time):
 		""" Movement and game logic """
@@ -340,7 +357,21 @@ class MyGame(arcade.Window):
 			elif laser.center_x - 18 < self.view_left:
 				laser.remove_from_sprite_lists()
 				print('laser removed')
-	
+		
+		#make enemies patrol on platforms
+		#create invisible platforms in foreground, i.e. platforms we do not call in
+		#draw, and then if enemy collides with these, they turn around
+		for enemy in self.enemy_list:
+			if enemy.change_x >0.5 and arcade.check_for_collision_with_list(enemy, self.invisible_platform_list):
+				enemy.change_x = -ENEMY_PATROL_SPEED 
+			elif enemy.change_x <-0.5 and arcade.check_for_collision_with_list(enemy, self.invisible_platform_list):
+				enemy.change_x = ENEMY_PATROL_SPEED
+			elif enemy.change_x == 0:
+				enemy.change_x = ENEMY_PATROL_SPEED
+
+
+		self.enemy_list.update()
+
 		# Track if we need to change the viewport
 
 		#check if player fell off map, this also works for the player falls in
