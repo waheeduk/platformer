@@ -394,13 +394,18 @@ class MyGame(arcade.Window):
 		#destroyed
 		for laser in self.bullet_list:
 			enemy_hit_list = arcade.check_for_collision_with_list(laser, self.enemy_list)
+			projectile_enemy_hit_list = arcade.check_for_collision_with_list(laser, self.projectile_enemy_list)
 			if len(enemy_hit_list) > 0:
 				laser.remove_from_sprite_lists()
 				for enemy in enemy_hit_list:
 					enemy.remove_from_sprite_lists()
 				continue
+			elif len(projectile_enemy_hit_list) > 0:
+				laser.remove_from_sprite_lists()
+				for enemy in projectile_enemy_hit_list:
+					enemy.remove_from_sprite_lists()
+				continue
 		
-		#USE DOCUMENTATIN ONLINE FOR SELF.PLAYERSPRITE COLLIDING WITH COINS
 		#check to see if gems were contacted by player sprite, in which case the 
 		#player gains an ability point
 		gem_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.gem_list)
@@ -419,9 +424,9 @@ class MyGame(arcade.Window):
 				enemy.change_x = ENEMY_PATROL_SPEED
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
-
+		
+		self.frame_count +=1
 		for enemy in self.projectile_enemy_list:
-			self.frame_count +=1
 			if self.frame_count % 240 == 0:
 				enemy_laser = arcade.Sprite("art/PNG/lasers/laserRedVertical.png", scale=LASER_SCALING)
 				enemy_laser.center_x = enemy.center_x
@@ -429,11 +434,16 @@ class MyGame(arcade.Window):
 				enemy_laser.change_y = -ENEMY_LASER_SPEED
 				self.enemy_laser_list.append(enemy_laser)
 
+		for laser in self.enemy_laser_list:
+			if arcade.check_for_collision_with_list(laser, self.wall_list):
+				laser.remove_from_sprite_lists()
+
 		self.enemy_laser_list.update()
+		self.projectile_enemy_list.update()
 
 		self.enemy_list.update()
 
-		# Track if we need to change the viewport
+		#----TRACK DEATH EVENTS----#
 
 		#check if player fell off map, this also works for the player falls in
 		#water, as the water level is always nine grid blocks above 0
@@ -447,6 +457,10 @@ class MyGame(arcade.Window):
 		if arcade.check_for_collision_with_list(self.player_sprite, self.projectile_enemy_list):
 			self.reset_position()
 
+		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_laser_list):
+			self.reset_position()
+
+		# Track if we need to change the viewport
 		changed = False
 
         # Scroll left
