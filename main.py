@@ -16,8 +16,8 @@ PLAYER_DASH_SPEED = 20
 GRAVITY = 0.5
 START_X = 64
 START_Y = (12*GRID_SIZE) +32
-
 LASER_SPEED = 25
+
 
 ENEMY_PATROL_SPEED = 3
 
@@ -111,6 +111,11 @@ class MyGame(arcade.Window):
 		super().__init__(SCREEN_WIDTH,SCREEN_HEIGHT, SCREEN_TITLE)
 		arcade.set_background_color(arcade.csscolor.AZURE)
 
+		#keeps track of frames
+		self.frame_count = 0
+
+		self.ability_count = 0
+
 		#track current state of what key is pressed
 		self.left_pressed = False
 		self.right_pressed = False
@@ -118,7 +123,6 @@ class MyGame(arcade.Window):
 		self.down_pressed = False
 		self.jump_needs_reset = False
 		self.dash_pressed = False
-		self.dash_needs_reset = False
 		self.shoot_pressed = False
 
 		#lists to keep track of sprites
@@ -128,6 +132,7 @@ class MyGame(arcade.Window):
 		self.bullet_list = None
 		self.background_list = None
 		self.ladder_list = None
+		self.gem_list = None
 
 		self.player_sprite = None
 		self.physics_engine = None 
@@ -150,6 +155,7 @@ class MyGame(arcade.Window):
 		self.enemy_list = arcade.SpriteList()
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
+		self.gem_list = arcade.SpriteList()
 
 		#sets up the player and drops it at a location
 		self.player_sprite = PlayerCharacter()
@@ -174,6 +180,9 @@ class MyGame(arcade.Window):
 
 		#layer containing enemies loaded in
 		enemy_layer_name = 'Enemies'
+
+		#layer containing gems
+		gem_layer_name = 'Gems'
 
 		#read in tiled map
 		my_map = arcade.tilemap.read_tmx(map_name)
@@ -215,6 +224,11 @@ class MyGame(arcade.Window):
 																	layer_name= invisible_platform_layer_name,
 																	scaling=TILE_SCALING)
 
+		#brings in gems
+		self.gem_list = arcade.tilemap.process_layer(map_object=my_map,
+													layer_name= gem_layer_name,
+													scaling=TILE_SCALING)
+
 		if my_map.background_color:
 			arcade.set_background_color(my_map.background_color)
 
@@ -253,13 +267,11 @@ class MyGame(arcade.Window):
 			self.player_sprite.change_x = 0
 
 		#process dash
-		if self.dash_pressed and self.right_pressed and not self.dash_needs_reset:
+		if self.dash_pressed and self.right_pressed and self.ability_count > 0:
 			self.player_sprite.change_x = PLAYER_DASH_SPEED
-			reset_timer(self.dash_needs_reset, 5)			
-		elif self.dash_pressed and self.left_pressed and not self.dash_needs_reset:
+		elif self.dash_pressed and self.left_pressed and self.ability_count >0:
 			self.player_sprite.change_x = -PLAYER_DASH_SPEED
-			reset_timer(self.dash_needs_reset, 5)
-
+		
 		#process shooting
 		if self.shoot_pressed and self.left_pressed:
 			#creates laser
@@ -311,6 +323,9 @@ class MyGame(arcade.Window):
 			self.right_pressed = False
 		elif key == arcade.key.SPACE:
 			self.dash_pressed = False
+			if self.ability_count > 0:
+				self.ability_count -= 1
+			print(self.ability_count)
 		elif key == arcade.key.RETURN:
 			self.shoot_pressed = False
 
@@ -325,10 +340,10 @@ class MyGame(arcade.Window):
 		self.moving_platform_list.draw()
 		self.bullet_list.draw()
 		self.enemy_list.draw()
+		self.gem_list.draw()
 
 	def on_update(self, delta_time):
 		""" Movement and game logic """
-
 		# Move the player with the physics engine
 		self.physics_engine.update()
 
@@ -368,6 +383,15 @@ class MyGame(arcade.Window):
 					enemy.remove_from_sprite_lists()
 				continue
 		
+		#USE DOCUMENTATIN ONLINE FOR SELF.PLAYERSPRITE COLLIDING WITH COINS
+		#check to see if gems were contacted by player sprite, in which case the 
+		#player gains an ability point
+		gem_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.gem_list)
+		for gem in gem_hit_list:
+			gem.remove_from_sprite_lists()
+			self.ability_count += 1
+			print(self.ability_count)
+
 		#make enemies patrol on platforms
 		#create invisible platforms in foreground, i.e. platforms we do not call in
 		#draw, and then if enemy collides with these, they turn around
@@ -394,6 +418,17 @@ class MyGame(arcade.Window):
 			self.view_left = 0
 			self.view_bottom = 0
 			changed_viewport = True
+
+		#check if player came into contact with enemy, and then 'dies'
+		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list):
+			#move the player to start
+			self.player_sprite.center_x = START_X
+			self.player_sprite.center_y = START_Y
+
+			#reset camera to start
+			self.view_left = 0
+			self.view_bottom = 0
+			changed_viewport = 0
 
 		changed = False
 

@@ -1,8 +1,9 @@
-Have basic outline of game
-Need to mirror animation images so sprite faces left and right
-Need to create dash mechanic
-Need to create parry mechanic
-Need to create enemies
+Have basic outline of game DONE
+Need to mirror animation images so sprite faces left and right DONE
+Need to create dash mechanic DONE
+Need to create parry mechanic 
+Need to create enemies DONE
+Need to create ability gems, which once collected allow for one use of ability DONE
 Need to create enemy projectiles
 Need to create health system
 Need to create character selection
