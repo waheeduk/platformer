@@ -13,6 +13,8 @@ Need to create swim mechanic as bonus
 Need to refactor code
 
 bugs:
+enemy lasers are passing through player, need to do damage
+need to scale enemy laser properly
 gems and enemies do not reset, i.e. if you die they're not resurrected
 fix when implementing health/hearts
 if hearts = 0

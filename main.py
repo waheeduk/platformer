@@ -18,8 +18,9 @@ START_X = 64
 START_Y = (12*GRID_SIZE) +32
 LASER_SPEED = 25
 
-
+#enemy constants
 ENEMY_PATROL_SPEED = 3
+ENEMY_LASER_SPEED = 10
 
 STARTING_POINT = 0
 MOVING_PLATFORM_SPEED = 5
@@ -146,6 +147,7 @@ class MyGame(arcade.Window):
 		self.ladder_list = arcade.SpriteList()
 		self.enemy_list = arcade.SpriteList()
 		self.projectile_enemy_list = arcade.SpriteList()
+		self.enemy_laser_list = arcade.SpriteList()
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
@@ -238,7 +240,6 @@ class MyGame(arcade.Window):
 															 self.wall_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
-#put projectile enemies in
 	def process_keychange(self):
 		# Process up/down
 		if self.up_pressed and not self.down_pressed:
@@ -343,6 +344,7 @@ class MyGame(arcade.Window):
 		self.enemy_list.draw()
 		self.projectile_enemy_list.draw()
 		self.gem_list.draw()
+		self.enemy_laser_list.draw()
 	
 	def reset_position(self):
 		#move the player to start
@@ -355,7 +357,6 @@ class MyGame(arcade.Window):
 		changed_viewport = 0
 		self.ability_count = 0
 
-#add projectile enemies to draw list
 	def on_update(self, delta_time):
 		""" Movement and game logic """
 		self.frame_count += 1
@@ -419,7 +420,16 @@ class MyGame(arcade.Window):
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
 
-		#create projectile enemies
+		for enemy in self.projectile_enemy_list:
+			self.frame_count +=1
+			if self.frame_count % 240 == 0:
+				enemy_laser = arcade.Sprite("art/PNG/lasers/laserRedVertical.png", scale=LASER_SCALING)
+				enemy_laser.center_x = enemy.center_x
+				enemy_laser.center_y = enemy.center_y - 54
+				enemy_laser.change_y = -ENEMY_LASER_SPEED
+				self.enemy_laser_list.append(enemy_laser)
+
+		self.enemy_laser_list.update()
 
 		self.enemy_list.update()
 
