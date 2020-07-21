@@ -42,14 +42,6 @@ def load_texture_pair(filename):
 		arcade.load_texture(filename, mirrored= True)
 	]
 
-#call this function to reset timers for abilities like dash
-def reset_timer(item_being_reset, reset_time):
-	time_now = time.time()
-	if time.time() - time_now < reset_time:
-		item_being_reset = True
-	else:
-		item_being_reset =False
-
 class PlayerCharacter(arcade.Sprite):
 	"""Player sprite"""
 	def __init__(self):
@@ -153,6 +145,7 @@ class MyGame(arcade.Window):
 		self.water_list = arcade.SpriteList()
 		self.ladder_list = arcade.SpriteList()
 		self.enemy_list = arcade.SpriteList()
+		self.projectile_enemy_list = arcade.SpriteList()
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
@@ -178,8 +171,11 @@ class MyGame(arcade.Window):
 		#layer containing items that will cause death and a reset
 		water_layer_name = 'Water'
 
-		#layer containing enemies loaded in
+		#layer containing general enemies loaded in
 		enemy_layer_name = 'Enemies'
+
+		#layer contaning enemies that shoot projectiles
+		projectile_enemy_layer_name = 'Projectile Enemies'
 
 		#layer containing gems
 		gem_layer_name = 'Gems'
@@ -214,10 +210,15 @@ class MyGame(arcade.Window):
 																 layer_name = moving_platforms_layer_name,
 																 scaling = TILE_SCALING)
 
-		#brings in enemies
+		#brings in general enemies
 		self.enemy_list = arcade.tilemap.process_layer(map_object= my_map,
 														layer_name= enemy_layer_name,
 														scaling=TILE_SCALING)
+
+		#brings in enemies that shoot projectiles
+		self.projectile_enemy_list = arcade.tilemap.process_layer(map_object=my_map,
+																layer_name=projectile_enemy_layer_name,
+																scaling= TILE_SCALING)
 
 		#brings in platforms that pen in enemies
 		self.invisible_platform_list = arcade.tilemap.process_layer(map_object = my_map,
@@ -237,7 +238,7 @@ class MyGame(arcade.Window):
 															 self.wall_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
-
+#put projectile enemies in
 	def process_keychange(self):
 		# Process up/down
 		if self.up_pressed and not self.down_pressed:
@@ -340,10 +341,25 @@ class MyGame(arcade.Window):
 		self.moving_platform_list.draw()
 		self.bullet_list.draw()
 		self.enemy_list.draw()
+		self.projectile_enemy_list.draw()
 		self.gem_list.draw()
+	
+	def reset_position(self):
+		#move the player to start
+		self.player_sprite.center_x = START_X
+		self.player_sprite.center_y = START_Y
 
+		#reset camera to start
+		self.view_left = 0
+		self.view_bottom = 0
+		changed_viewport = 0
+		self.ability_count = 0
+
+#add projectile enemies to draw list
 	def on_update(self, delta_time):
 		""" Movement and game logic """
+		self.frame_count += 1
+
 		# Move the player with the physics engine
 		self.physics_engine.update()
 
@@ -403,6 +419,7 @@ class MyGame(arcade.Window):
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
 
+		#create projectile enemies
 
 		self.enemy_list.update()
 
@@ -411,24 +428,14 @@ class MyGame(arcade.Window):
 		#check if player fell off map, this also works for the player falls in
 		#water, as the water level is always nine grid blocks above 0
 		if self.player_sprite.center_y < 9* GRID_SIZE:
-			self.player_sprite.center_x = START_X
-			self.player_sprite.center_y = START_Y
+			self.reset_position()
 
-			#reset camera to start
-			self.view_left = 0
-			self.view_bottom = 0
-			changed_viewport = True
-
-		#check if player came into contact with enemy, and then 'dies'
+		#check if player came into contact with general/type enemy, and then 'dies'
 		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list):
-			#move the player to start
-			self.player_sprite.center_x = START_X
-			self.player_sprite.center_y = START_Y
-
-			#reset camera to start
-			self.view_left = 0
-			self.view_bottom = 0
-			changed_viewport = 0
+			self.reset_position()
+		
+		if arcade.check_for_collision_with_list(self.player_sprite, self.projectile_enemy_list):
+			self.reset_position()
 
 		changed = False
 

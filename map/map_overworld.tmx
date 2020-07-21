@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="15" nextobjectid="1">
- <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="25" columns="0">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="16" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="26" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_05.png"/>
@@ -77,6 +77,9 @@
   <tile id="30">
    <image width="24" height="22" source="../art/PNG/Items/yellowJewel.png"/>
   </tile>
+  <tile id="31">
+   <image width="64" height="38" source="../art/PNG/Enemies/enemyFlying_1.png"/>
+  </tile>
  </tileset>
  <layer id="9" name="Enemies" width="128" height="128">
   <data encoding="base64" compression="zlib">
@@ -95,7 +98,7 @@
  </layer>
  <layer id="2" name="Platforms" width="128" height="128">
   <data encoding="base64" compression="zlib">
-   eJzt2LEKgzAQBuDUQeimU4e+/3u2Q4coCVYInInfB0fAOIj/XQRTAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP6thap5HBTjOeoJ+nRm7rkf/TGmUq6yJac34H7MPWe9ox+Aqjlt53n/v6bFnjPjmp7fWgKKeFHZyz9eZPbyby//7r5+16bdOmf3RGYv//ZK77e0XqUAAAAAgP99AA+hDcY=
+   eJzt2LsOgjAAhtHqQOKmk4Pv/54OOlRSgiTEYv9zkoZwGQhfCwmlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZLqu7DM2/bPpn03/bPpn0z+b/tn0z6Z/Nv2z6Z9Nf8h1a4wlp5XBeNbmBP9py7onj/kxplZXbamZG5DHumerR+8bYNFUPtfz/H/NHue8M47pUl7/8n896K9Xe/3769le//3V3937+9h5tp2qa3q2139/refb2h5lAAAAAADfewL5FA9G
   </data>
  </layer>
  <layer id="8" name="Background" width="128" height="128">
@@ -116,6 +119,11 @@
  <layer id="3" name="Breakable" width="128" height="128">
   <data encoding="base64" compression="zlib">
    eJztwQEBAAAAgJD+r+4ICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGoADwAB
+  </data>
+ </layer>
+ <layer id="15" name="Projectile Enemies" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJztzjEBAAAIAyCjrH9KG/juEBIwAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApB0AAAAAAAAAAAAA4JR2AAAAAAAAAADgiQWo0gBB
   </data>
  </layer>
  <layer id="10" name="Invisible Platforms" width="128" height="128">
