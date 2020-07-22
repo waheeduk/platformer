@@ -108,6 +108,7 @@ class MyGame(arcade.Window):
 		self.frame_count = 0
 
 		self.ability_count = 0
+		self.heart_count = 3
 
 		#track current state of what key is pressed
 		self.left_pressed = False
@@ -126,6 +127,7 @@ class MyGame(arcade.Window):
 		self.background_list = None
 		self.ladder_list = None
 		self.gem_list = None
+		self.heart_list = None
 
 		self.player_sprite = None
 		self.physics_engine = None 
@@ -150,6 +152,7 @@ class MyGame(arcade.Window):
 		self.enemy_laser_list = arcade.SpriteList()
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
+		self.heart_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
 
 		#sets up the player and drops it at a location
@@ -240,6 +243,9 @@ class MyGame(arcade.Window):
 															 self.wall_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
+
+												
+						
 	def process_keychange(self):
 		# Process up/down
 		if self.up_pressed and not self.down_pressed:
@@ -345,7 +351,11 @@ class MyGame(arcade.Window):
 		self.projectile_enemy_list.draw()
 		self.gem_list.draw()
 		self.enemy_laser_list.draw()
-	
+		#creates hearts to show the player lives
+		#move to draw function and draw individually
+
+		self.heart_list.draw()
+
 	def reset_position(self):
 		#move the player to start
 		self.player_sprite.center_x = START_X
@@ -356,6 +366,8 @@ class MyGame(arcade.Window):
 		self.view_bottom = 0
 		changed_viewport = 0
 		self.ability_count = 0
+		self.heart_count -= 1
+		print(self.heart_count)
 
 	def on_update(self, delta_time):
 		""" Movement and game logic """
@@ -405,7 +417,10 @@ class MyGame(arcade.Window):
 				for enemy in projectile_enemy_hit_list:
 					enemy.remove_from_sprite_lists()
 				continue
-		
+
+		heart = arcade.Sprite("art/PNG/Other/heart.png", scale=LASER_SCALING, center_x= self.view_left + 20, center_y= self.view_bottom +20)
+		self.heart_list.append(heart)		
+
 		#check to see if gems were contacted by player sprite, in which case the 
 		#player gains an ability point
 		gem_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.gem_list)
@@ -424,7 +439,7 @@ class MyGame(arcade.Window):
 				enemy.change_x = ENEMY_PATROL_SPEED
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
-		
+
 		self.frame_count +=1
 		for enemy in self.projectile_enemy_list:
 			if self.frame_count % 240 == 0:
