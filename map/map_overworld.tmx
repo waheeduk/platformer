@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="16" nextobjectid="1">
- <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="26" columns="0">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="64" infinite="0" nextlayerid="17" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="28" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_05.png"/>
@@ -80,58 +80,69 @@
   <tile id="31">
    <image width="64" height="38" source="../art/PNG/Enemies/enemyFlying_1.png"/>
   </tile>
+  <tile id="32">
+   <image width="64" height="64" source="../art/PNG/Other/doorOpen.png"/>
+  </tile>
+  <tile id="33">
+   <image width="64" height="64" source="../art/PNG/Other/fluidBrown.png"/>
+  </tile>
  </tileset>
- <layer id="9" name="Enemies" width="128" height="128">
+ <layer id="9" name="Enemies" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztzgENAAAIA6AHsX9OY3w6SEACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcNO0AwAAAAAAAAAAAAAAzyz+qwAd
   </data>
  </layer>
- <layer id="14" name="Gems" width="128" height="128">
+ <layer id="14" name="Gems" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJzt1kENAAAIA7E5wb9LVJCFpFVwz0sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH6YdgAAAKf8HgAAAAAAAAD0LeUXAD8=
   </data>
  </layer>
- <layer id="7" name="Ladders" width="128" height="128">
+ <layer id="7" name="Ladders" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJzt0QEJADAMwLDJ+P0bvYweligodAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP526wBSpw4g5f9u/u/mPwAAAAAAAAA0HuUTAHo=
   </data>
  </layer>
- <layer id="2" name="Platforms" width="128" height="128">
+ <layer id="2" name="Platforms" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzt2LsOgjAAhtHqQOKmk4Pv/54OOlRSgiTEYv9zkoZwGQhfCwmlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZLqu7DM2/bPpn03/bPpn0z+b/tn0z6Z/Nv2z6Z9Nf8h1a4wlp5XBeNbmBP9py7onj/kxplZXbamZG5DHumerR+8bYNFUPtfz/H/NHue8M47pUl7/8n896K9Xe/3769le//3V3937+9h5tp2qa3q2139/refb2h5lAAAAAADfewL5FA9G
+   eJzt2LsKwjAAhtHoUHDTyfd/UwcdYkmJQjE1/zkQSi9Tv6SFlAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJDp2jlnbvpn0z+b/tn0z6Z/Nv2z6Z9N/2z6Z9M/m/6Q69YYW06dwXx6c4L/9M26J4/5MadWV22pmRuQx7qHeSzlfT2v92v2uOebcUyX8tzL//VgvFHt9R9vZHv991f/d++va+fVcameGdle//213m/reJQBAAAAAHzuAanHDys=
   </data>
  </layer>
- <layer id="8" name="Background" width="128" height="128">
+ <layer id="16" name="Selection" width="128" height="128">
+  <data encoding="base64" compression="zlib">
+   eJzt0TEKACAQA8H8w0r//0ixs7zuQGcgfWATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeN/oPkCbdY3/nO4z+gMAAAAAAABA1QZxMgDn
+  </data>
+ </layer>
+ <layer id="8" name="Background" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztwQEBAAAAgJD+r+4ICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGoADwAB
   </data>
  </layer>
- <layer id="6" name="Moving Platforms" width="128" height="128">
+ <layer id="6" name="Moving Platforms" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztzgENAAAIA6DnsH9QY3w6SEACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf007AAAAAAAAAAAAAAAAhyzUGwAb
   </data>
  </layer>
- <layer id="5" name="Water" width="128" height="128">
+ <layer id="5" name="Water" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJzt0cEJACEAA0Er8Prv1gr8+LgVmYGQAnYMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADj3bZ43zYvG/+rm+rfq5vq36ub6t+rm+rfq5vq36ub6t+rm+rfq5vq3Fjp0EWg=
   </data>
  </layer>
- <layer id="3" name="Breakable" width="128" height="128">
+ <layer id="3" name="Breakable" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztwQEBAAAAgJD+r+4ICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGoADwAB
   </data>
  </layer>
- <layer id="15" name="Projectile Enemies" width="128" height="128">
+ <layer id="15" name="Projectile Enemies" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztzjEBACAABCGjfP+UZnC6QUjAOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOoAAAAAAAAAAAAAT1YHyKwOkFkdAAAAAAAAAAD4xAXR2QCB
   </data>
  </layer>
- <layer id="10" name="Invisible Platforms" width="128" height="128">
+ <layer id="10" name="Invisible Platforms" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztyDENAAAIA7AZwb9NJCycJO3ZBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCfOT4AAAAAAAAAAAAAAN0CVuUAOw==
   </data>
  </layer>
- <layer id="4" name="Breaking" width="128" height="128">
+ <layer id="4" name="Breaking" width="128" height="128" locked="1">
   <data encoding="base64" compression="zlib">
    eJztwQEBAAAAgJD+r+4ICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGoADwAB
   </data>

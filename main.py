@@ -129,6 +129,8 @@ class MyGame(arcade.Window):
 		self.gem_list = None
 		self.heart_list = None
 
+		self.heart_sprite = None
+
 		self.player_sprite = None
 		self.physics_engine = None 
 
@@ -160,6 +162,7 @@ class MyGame(arcade.Window):
 		self.player_sprite.center_x = START_X
 		self.player_sprite.center_y = START_Y
 		self.player_list.append(self.player_sprite)
+
 
 		#load map from map editor
 
@@ -354,7 +357,8 @@ class MyGame(arcade.Window):
 		#creates hearts to show the player lives
 		#move to draw function and draw individually
 
-		self.heart_list.draw()
+		# self.heart_list.draw()
+		self.heart_sprite.draw()
 
 	def reset_position(self):
 		#move the player to start
@@ -418,8 +422,9 @@ class MyGame(arcade.Window):
 					enemy.remove_from_sprite_lists()
 				continue
 
-		heart = arcade.Sprite("art/PNG/Other/heart.png", scale=LASER_SCALING, center_x= self.view_left + 20, center_y= self.view_bottom +20)
-		self.heart_list.append(heart)		
+		#initialise the heart sprite
+		self.heart_sprite = arcade.Sprite("art/PNG/Other/heart.png", scale=LASER_SCALING, center_x= -188, center_y= 346)
+		print(self.heart_sprite.center_x)		
 
 		#check to see if gems were contacted by player sprite, in which case the 
 		#player gains an ability point

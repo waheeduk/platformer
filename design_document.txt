@@ -5,7 +5,7 @@ Need to create parry mechanic
 Need to create enemies DONE
 Need to create ability gems, which once collected allow for one use of ability DONE
 Need to create enemy projectiles DONE
-Need to create health system
+Need to create health system PARTIAL, 
 Need to create character selection
 Need to create objectives and collectibes
 Need to create timer and high score
@@ -14,9 +14,7 @@ Need to refactor code
 
 bugs:
 hearts are not properly moving across screen
-make a self.diff initially
-find the self.diff when the screen scrolls
-then add self.diff to center x and center y
+hearts position needs to be moved with change_x and change_y
 perhaps make the heart a sprite that moves like the player
 differentt tier health for enemies
 gems and enemies do not reset, i.e. if you die they're not resurrected
@@ -25,6 +23,8 @@ if hearts = 0
 then for enemies in dead enemies
 enemy_list.append(enemies)
 different types of enemies should be under enemy class
+
+character selection mechanic
 
 parry mechanic:
 if dash pressed is true and if up pressed is true and if distance player centre
