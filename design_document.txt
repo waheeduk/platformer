@@ -13,7 +13,10 @@ Need to create swim mechanic as bonus
 Need to refactor code
 
 bugs:
-hearts are displaying on top of each other instead of moving
+hearts are not properly moving across screen
+make a self.diff initially
+find the self.diff when the screen scrolls
+then add self.diff to center x and center y
 perhaps make the heart a sprite that moves like the player
 differentt tier health for enemies
 gems and enemies do not reset, i.e. if you die they're not resurrected
