@@ -1,7 +1,7 @@
 Have basic outline of game DONE
 Need to mirror animation images so sprite faces left and right DONE
 Need to create dash mechanic DONE
-Need to create parry mechanic 
+Need to create wall jump mechanic 
 Need to create enemies DONE
 Need to create ability gems, which once collected allow for one use of ability DONE
 Need to create enemy projectiles DONE
@@ -13,6 +13,16 @@ Need to create swim mechanic as bonus
 Need to refactor code
 
 bugs:
+wall jumps are not working
+code it so player cannot go over/behind wall, code this in without physics engine
+
+if playersprite.left hits scalable.left or scalable.right:
+player.spritechangex = -dash seed or dash speed
+use list comprehensions
+
+phsyics engine operates as usual
+perhaps inspect the physics engine
+or if player sprite collides with scalable wall the jump reset is false
 hearts are not properly moving across screen
 hearts position needs to be moved with change_x and change_y
 perhaps make the heart a sprite that moves like the player
@@ -25,6 +35,8 @@ enemy_list.append(enemies)
 different types of enemies should be under enemy class
 
 character selection mechanic
+if player sprite collides with character slection screen
+then render a screen with left and right buttons displaying different characters
 
 parry mechanic:
 if dash pressed is true and if up pressed is true and if distance player centre

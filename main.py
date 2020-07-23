@@ -118,6 +118,7 @@ class MyGame(arcade.Window):
 		self.jump_needs_reset = False
 		self.dash_pressed = False
 		self.shoot_pressed = False
+		self.parry_pressed = False
 
 		#lists to keep track of sprites
 		self.wall_list = None
@@ -125,6 +126,7 @@ class MyGame(arcade.Window):
 		self.player_list = None
 		self.bullet_list = None
 		self.background_list = None
+		self.scalable_wall_list = None
 		self.ladder_list = None
 		self.gem_list = None
 		self.heart_list = None
@@ -133,6 +135,8 @@ class MyGame(arcade.Window):
 
 		self.player_sprite = None
 		self.physics_engine = None 
+
+		self.distance = 0
 
 		#keeps track of scroll margins
 		self.view_bottom = 0
@@ -146,6 +150,7 @@ class MyGame(arcade.Window):
 		self.player_list = arcade.SpriteList()
 		self.bullet_list = arcade.SpriteList()
 		self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+		self.scalable_wall_list = arcade.SpriteList(use_spatial_hash=True)
 		self.background_list = arcade.SpriteList()
 		self.water_list = arcade.SpriteList()
 		self.ladder_list = arcade.SpriteList()
@@ -173,6 +178,7 @@ class MyGame(arcade.Window):
 		moving_platforms_layer_name = 'Moving Platforms'
 		ladders_layer_name = 'Ladders'
 		invisible_platform_layer_name = 'Invisible Platforms'
+		scalable_wall_layer_name = 'Scalable'
 
 		#layer containing background items
 		background_layer_name = 'Background'
@@ -202,6 +208,11 @@ class MyGame(arcade.Window):
 		self.wall_list = arcade.tilemap.process_layer(map_object = my_map,
 													  layer_name = platforms_layer_name,
 													  scaling = TILE_SCALING)
+
+		#brings in scalable walls
+		self.scalable_wall_list = arcade.tilemap.process_layer(map_object= my_map,
+																layer_name=scalable_wall_layer_name,
+																scaling = TILE_SCALING)
 
 		#brings in ladder tiles
 		self.ladder_list = arcade.tilemap.process_layer(map_object = my_map,
@@ -238,17 +249,22 @@ class MyGame(arcade.Window):
 													layer_name= gem_layer_name,
 													scaling=TILE_SCALING)
 
+		#creates a list of all the platforms that the physics engine takes a note of
+		self.all_platform_list = arcade.SpriteList(use_spatial_hash=True)
+		for platform in self.wall_list:
+			self.all_platform_list.append(platform)
+		for scalable in self.scalable_wall_list:
+			self.all_platform_list.append(scalable)
+
 		if my_map.background_color:
 			arcade.set_background_color(my_map.background_color)
 
 		#create physics engine
 		self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-															 self.wall_list,
+															 self.all_platform_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
-
-												
-						
+																		
 	def process_keychange(self):
 		# Process up/down
 		if self.up_pressed and not self.down_pressed:
@@ -303,6 +319,13 @@ class MyGame(arcade.Window):
 			laser.change_x = LASER_SPEED
 			self.bullet_list.append(laser)
 
+		#process parry
+		# if self.parry_pressed and self.distance < 5:
+		
+
+		#process wall climbing
+		
+
 	def on_key_press(self, key, modifiers):
 		"""called whenever a key is pressed"""
 		if key == arcade.key.UP or key == arcade.key.W:
@@ -317,6 +340,8 @@ class MyGame(arcade.Window):
 			self.dash_pressed = True
 		elif key == arcade.key.RETURN:
 			self.shoot_pressed = True
+		elif key == arcade.key.E:
+			self.parry_pressed = True
 
 		self.process_keychange()
 
@@ -339,6 +364,8 @@ class MyGame(arcade.Window):
 			print(self.ability_count)
 		elif key == arcade.key.RETURN:
 			self.shoot_pressed = False
+		elif key == arcade.key.E:
+			self.parry_pressed = False
 
 	def on_draw(self):
 		"""render the screen"""
@@ -346,6 +373,7 @@ class MyGame(arcade.Window):
 		self.background_list.draw()
 		self.water_list.draw()
 		self.wall_list.draw()
+		self.scalable_wall_list.draw()
 		self.ladder_list.draw()
 		self.player_list.draw()
 		self.moving_platform_list.draw()
@@ -424,7 +452,6 @@ class MyGame(arcade.Window):
 
 		#initialise the heart sprite
 		self.heart_sprite = arcade.Sprite("art/PNG/Other/heart.png", scale=LASER_SCALING, center_x= -188, center_y= 346)
-		print(self.heart_sprite.center_x)		
 
 		#check to see if gems were contacted by player sprite, in which case the 
 		#player gains an ability point
@@ -445,6 +472,13 @@ class MyGame(arcade.Window):
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
 
+		#build double jump	
+		if arcade.check_for_collision_with_list(self.player_sprite, self.scalable_wall_list) == True:
+			self.player_sprite.change_y = PLAYER_DASH_SPEED
+			print(self.player_sprite.change_y)
+			print('Collision detected')
+			self.physics_engine.can_jump()
+
 		self.frame_count +=1
 		for enemy in self.projectile_enemy_list:
 			if self.frame_count % 240 == 0:
@@ -457,6 +491,10 @@ class MyGame(arcade.Window):
 		for laser in self.enemy_laser_list:
 			if arcade.check_for_collision_with_list(laser, self.wall_list):
 				laser.remove_from_sprite_lists()
+			self.distance = arcade.get_distance_between_sprites(laser, self.player_sprite)
+			print(self.distance)
+			if self.parry_pressed and self.distance < 80:
+				laser.change_y = ENEMY_LASER_SPEED
 
 		self.enemy_laser_list.update()
 		self.projectile_enemy_list.update()
