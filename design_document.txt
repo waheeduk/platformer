@@ -12,7 +12,15 @@ Need to create timer and high score
 Need to create swim mechanic as bonus
 Need to refactor code
 
+swimming
+if player is in fluid
+phsyics engine is off
+can move in any direction
+speed is reduced
+gravity is reduced
+
 bugs:
+player is almost invisible underwater!!
 wall jumps are not working
 code it so player cannot go over/behind wall, code this in without physics engine
 

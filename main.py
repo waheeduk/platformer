@@ -11,9 +11,11 @@ LASER_SCALING = 0.5
 
 #player constants
 PLAYER_MOVEMENT_SPEED = 5
+PLAYER_SWIM_SPEED = 2
 PLAYER_JUMP_SPEED = 10
 PLAYER_DASH_SPEED = 20
 GRAVITY = 0.5
+FLUID_GRAVITY = 0.1
 START_X = 64
 START_Y = (12*GRID_SIZE) +32
 LASER_SPEED = 25
@@ -109,6 +111,9 @@ class MyGame(arcade.Window):
 
 		self.ability_count = 0
 		self.heart_count = 3
+
+		#track player state
+		self.in_fluid = False
 
 		#track current state of what key is pressed
 		self.left_pressed = False
@@ -264,7 +269,7 @@ class MyGame(arcade.Window):
 															 self.all_platform_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
-																		
+
 	def process_keychange(self):
 		# Process up/down
 		if self.up_pressed and not self.down_pressed:
@@ -319,12 +324,34 @@ class MyGame(arcade.Window):
 			laser.change_x = LASER_SPEED
 			self.bullet_list.append(laser)
 
-		#process parry
-		# if self.parry_pressed and self.distance < 5:
-		
-
-		#process wall climbing
-		
+		#process swimming
+		if self.in_fluid == True:
+			#reduces gravity to give swimming a floatier feel
+			self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+			self.all_platform_list,
+			gravity_constant= FLUID_GRAVITY,
+			ladders=self.ladder_list)
+			#process underwater movement left/right/up/down
+			if self.left_pressed:
+				self.player_sprite.change_x = -PLAYER_SWIM_SPEED
+			elif self.right_pressed:
+				self.player_sprite.change_x = PLAYER_SWIM_SPEED
+			elif self.up_pressed:
+				self.player_sprite.change_y = PLAYER_SWIM_SPEED
+			elif self.down_pressed:
+				self.player_sprite.change_y = -PLAYER_SWIM_SPEED
+			#process underwater dash
+			elif self.dash_pressed and self.right_pressed:
+				self.player_sprite.change_x = PLAYER_DASH_SPEED
+			elif self.dash_pressed and self.left_pressed:
+				self.player_sprite.change_x = -PLAYER_DASH_SPEED
+			#underwater parry should work regardless, test this out
+		else:
+			#returns physics back to normalddd
+			self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+															 self.all_platform_list,
+															 gravity_constant = GRAVITY,
+															 ladders = self.ladder_list)
 
 	def on_key_press(self, key, modifiers):
 		"""called whenever a key is pressed"""
@@ -407,6 +434,14 @@ class MyGame(arcade.Window):
 
 		# Move the player with the physics engine
 		self.physics_engine.update()
+
+		#check if the player is in water, water is always at a certain level, so
+		#can just check if player is below this level
+
+		if self.player_sprite.center_y < 9 * GRID_SIZE:
+			self.in_fluid = True
+		else:
+			self.in_fluid = False
 
 		# Update animations
 		if self.physics_engine.can_jump():
@@ -506,8 +541,10 @@ class MyGame(arcade.Window):
 
 		#check if player fell off map, this also works for the player falls in
 		#water, as the water level is always nine grid blocks above 0
-		if self.player_sprite.center_y < 9* GRID_SIZE:
+		if self.player_sprite.center_y < 1 * GRID_SIZE:
 			self.reset_position()
+
+		# print(self.player_sprite.center_y)
 
 		#check if player came into contact with general/type enemy, and then 'dies'
 		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list):
