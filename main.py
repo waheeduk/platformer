@@ -134,12 +134,15 @@ class MyGame(arcade.Window):
 		self.scalable_wall_list = None
 		self.ladder_list = None
 		self.gem_list = None
+		self.checkpoint_list = None
 		self.heart_list = None
 
 		self.heart_sprite = None
 
 		self.player_sprite = None
 		self.physics_engine = None 
+
+		self.checkpoint = -1
 
 		self.distance = 0
 
@@ -165,6 +168,7 @@ class MyGame(arcade.Window):
 		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
 		self.heart_list = arcade.SpriteList()
+		self.checkpoint_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
 
 		#sets up the player and drops it at a location
@@ -195,6 +199,9 @@ class MyGame(arcade.Window):
 
 		#layer contaning enemies that shoot projectiles
 		projectile_enemy_layer_name = 'Projectile Enemies'
+
+		#layer containing checkpoint
+		checkpoint_layer_name = 'Checkpoint'
 
 		#layer containing gems
 		gem_layer_name = 'Gems'
@@ -248,6 +255,11 @@ class MyGame(arcade.Window):
 		self.invisible_platform_list = arcade.tilemap.process_layer(map_object = my_map,
 																	layer_name= invisible_platform_layer_name,
 																	scaling=TILE_SCALING)
+
+		#brings in checkpoint layers
+		self.checkpoint_list = arcade.tilemap.process_layer(map_object=my_map,
+		layer_name=checkpoint_layer_name,
+		scaling=TILE_SCALING)
 
 		#brings in gems
 		self.gem_list = arcade.tilemap.process_layer(map_object=my_map,
@@ -347,7 +359,7 @@ class MyGame(arcade.Window):
 				self.player_sprite.change_x = -PLAYER_DASH_SPEED
 			#underwater parry should work regardless, test this out
 		else:
-			#returns physics back to normalddd
+			#returns physics back to normal
 			self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
 															 self.all_platform_list,
 															 gravity_constant = GRAVITY,
@@ -402,6 +414,7 @@ class MyGame(arcade.Window):
 		self.wall_list.draw()
 		self.scalable_wall_list.draw()
 		self.ladder_list.draw()
+		self.checkpoint_list.draw()
 		self.player_list.draw()
 		self.moving_platform_list.draw()
 		self.bullet_list.draw()
@@ -555,6 +568,18 @@ class MyGame(arcade.Window):
 
 		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_laser_list):
 			self.reset_position()
+
+		#checks to see if player has hit checkpoint, and then alters the player
+		#starting coordinates
+		#for n in len checkpoint list
+		#if player sprite collides with checkpoint n
+		#start x and start y equal checkpoint n center x and checkpoint n center y
+		if arcade.check_for_collision_with_list(self.player_sprite, self.checkpoint_list):
+			print('checkpoint collision detectedd')
+			#coordinates should roughly be 2400, 992
+			START_X = self.checkpoint_list[0].center_x
+			START_Y = self.checkpoint_list[0].center_y
+			print(START_X)
 
 		# Track if we need to change the viewport
 		changed = False

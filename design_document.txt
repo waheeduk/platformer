@@ -1,26 +1,23 @@
 Have basic outline of game DONE
 Need to mirror animation images so sprite faces left and right DONE
 Need to create dash mechanic DONE
-Need to create wall jump mechanic 
+Need to create wall jump mechanic DELETED
 Need to create enemies DONE
 Need to create ability gems, which once collected allow for one use of ability DONE
 Need to create enemy projectiles DONE
-Need to create health system PARTIAL, 
-Need to create character selection
+Need to create health system DELETED
+Need to create checkpoint system 
+Need to create character selection DELETED
 Need to create objectives and collectibes
 Need to create timer and high score
-Need to create swim mechanic as bonus
+Need to create swim mechanic as bonus DONE
 Need to refactor code
 
-swimming
-if player is in fluid
-phsyics engine is off
-can move in any direction
-speed is reduced
-gravity is reduced
-
 bugs:
+start x is changed to checkpoint center but player still starts at origin
 player is almost invisible underwater!!
+enemies are not vulnerable to their own lasers
+need to create visual feedback to show player taking damage/dying
 wall jumps are not working
 code it so player cannot go over/behind wall, code this in without physics engine
 
