@@ -170,6 +170,7 @@ class MyGame(arcade.Window):
 		self.heart_list = arcade.SpriteList()
 		self.checkpoint_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
+		self.ability_reset_count = 0
 
 		#sets up the player and drops it at a location
 		self.player_sprite = PlayerCharacter()
@@ -437,9 +438,9 @@ class MyGame(arcade.Window):
 		self.view_left = 0
 		self.view_bottom = 0
 		changed_viewport = 0
-		self.ability_count = 0
+		self.ability_count += self.ability_reset_count
 		self.heart_count -= 1
-		print(self.heart_count)
+		self.ability_reset_count = 0
 
 	def on_update(self, delta_time):
 		""" Movement and game logic """
@@ -505,9 +506,10 @@ class MyGame(arcade.Window):
 		#player gains an ability point
 		gem_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.gem_list)
 		for gem in gem_hit_list:
+			self.ability_reset_count += 1
 			gem.remove_from_sprite_lists()
+			#add the gems collected to a list so they can be recalled upon reset
 			self.ability_count += 1
-			print(self.ability_count)
 
 		#make enemies patrol on platforms
 		#create invisible platforms in foreground, i.e. platforms we do not call in
