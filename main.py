@@ -537,9 +537,15 @@ class MyGame(arcade.Window):
 				self.enemy_laser_list.append(enemy_laser)
 
 		for laser in self.enemy_laser_list:
+			projectile_enemy_hit_list = arcade.check_for_collision_with_list(laser, self.projectile_enemy_list)
 			#removes laser if it hits a platform
 			if arcade.check_for_collision_with_list(laser, self.wall_list):
 				laser.remove_from_sprite_lists()
+			if len(projectile_enemy_hit_list) >0:
+				laser.remove_from_sprite_lists()
+				for enemy in projectile_enemy_hit_list:
+					enemy.remove_from_sprite_lists()
+				continue
 			#gets distance between player and laser, then creates parry mechanic
 			self.distance = arcade.get_distance_between_sprites(laser, self.player_sprite)
 			if self.parry_pressed and self.distance < 80:
