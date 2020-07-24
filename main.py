@@ -4,7 +4,7 @@ import time
 #constants
 SCREEN_HEIGHT = 600 
 SCREEN_WIDTH = 1200
-SCREEN_TITLE = "THE GAME"
+SCREEN_TITLE = "NAPP"
 TILE_SCALING = 1
 GRID_SIZE = 64
 LASER_SCALING = 0.5
@@ -12,9 +12,9 @@ LASER_SCALING = 0.5
 #player constants
 PLAYER_MOVEMENT_SPEED = 5
 PLAYER_SWIM_SPEED = 2
-PLAYER_JUMP_SPEED = 10
-PLAYER_DASH_SPEED = 35
-GRAVITY = 0.3
+PLAYER_JUMP_SPEED = 15
+PLAYER_DASH_SPEED = 15
+GRAVITY = 0.5
 FLUID_GRAVITY = 0.1
 LASER_SPEED = 25
 
@@ -23,7 +23,6 @@ ENEMY_PATROL_SPEED = 3
 ENEMY_LASER_SPEED = 10
 
 STARTING_POINT = 0
-MOVING_PLATFORM_SPEED = 5
 UPDATES_PER_FRAME = 5
 
 # How many pixels to keep as a minimum margin between the character
@@ -57,7 +56,7 @@ class PlayerCharacter(arcade.Sprite):
 
 		#load textures
 		#main directory where art is held
-		main_path = "art/PNG/Players/Player Blue/playerBlue"
+		main_path = "art/PNG/Players/Player Grey/playerGrey"
 
 		#load textures for idle
 		self.idle_texture = load_texture_pair(f"{main_path}_stand.png")
@@ -106,8 +105,34 @@ class MenuView(arcade.View):
 		anchor_x = "center")
 		arcade.draw_text("Not Another Puzzle Platformer", SCREEN_WIDTH/2, 
 		SCREEN_HEIGHT/2 - 70, arcade.color.BLACK, font_size= 30, anchor_x= "center")
-		arcade.draw_text("Press enter to start the game", SCREEN_WIDTH/2,
+		arcade.draw_text("Press ENTER to see the instructions", SCREEN_WIDTH/2,
 		SCREEN_HEIGHT - 500, arcade.color.BLACK, font_size=20, anchor_x="center")
+
+	def on_key_press(self, key, modifiers):
+		"""press return to advance to instrucitons"""
+		if key == arcade.key.ENTER:
+			instructions_view = InstructionsView()
+			self.window.show_view(instructions_view)
+
+class InstructionsView(arcade.View):
+	"""class containing instructions"""
+	def on_show(self):
+		arcade.set_background_color(arcade.color.WHITE)
+
+	def on_draw(self):
+		arcade.start_render()
+		arcade.draw_text("Play through the level and find the stars. Jump your way across platforms.", 
+		SCREEN_WIDTH/2, SCREEN_HEIGHT-50, arcade.color.BLACK, font_size= 20, anchor_x= "center")
+		arcade.draw_text("E to parry an enemy laser. Enter to fire a laser. Space to dash.", SCREEN_WIDTH/2, 
+		SCREEN_HEIGHT-100, arcade.color.BLACK, font_size= 20, anchor_x= "center")
+		arcade.draw_text("Find yellow gems to unlock special abilities", SCREEN_WIDTH/2,
+		SCREEN_HEIGHT -150, arcade.color.BLACK, font_size=20, anchor_x="center")
+		arcade.draw_text("WASD or arrows to move and jump.", SCREEN_WIDTH/2,
+		SCREEN_HEIGHT -200, arcade.color.BLACK, font_size=20, anchor_x="center")
+		arcade.draw_text("E to parry an enemy laser. Enter to fire a laser. Space to dash.", SCREEN_WIDTH/2,
+		SCREEN_HEIGHT -250, arcade.color.BLACK, font_size=20, anchor_x="center")
+		arcade.draw_text("Press ENTER to start the game!", SCREEN_WIDTH/2,
+		SCREEN_HEIGHT - 300, arcade.color.BLACK, font_size=20, anchor_x="center")
 
 	def on_key_press(self, key, modifiers):
 		"""use mouse to advance game"""
@@ -115,7 +140,7 @@ class MenuView(arcade.View):
 			game_view = GameView()
 			game_view.setup()
 			self.window.show_view(game_view)
-
+	
 class GameView(arcade.View):
 	"""
 	Main application class
@@ -152,7 +177,6 @@ class GameView(arcade.View):
 		self.player_list = None
 		self.bullet_list = None
 		self.background_list = None
-		self.scalable_wall_list = None
 		self.ladder_list = None
 		self.gem_list = None
 		self.checkpoint_list = None
@@ -179,14 +203,12 @@ class GameView(arcade.View):
 		self.player_list = arcade.SpriteList()
 		self.bullet_list = arcade.SpriteList()
 		self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-		self.scalable_wall_list = arcade.SpriteList(use_spatial_hash=True)
 		self.background_list = arcade.SpriteList()
 		self.water_list = arcade.SpriteList()
 		self.ladder_list = arcade.SpriteList()
 		self.enemy_list = arcade.SpriteList()
 		self.projectile_enemy_list = arcade.SpriteList()
 		self.enemy_laser_list = arcade.SpriteList()
-		self.moving_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		self.invisible_platform_list = arcade.SpriteList()
 		self.heart_list = arcade.SpriteList()
 		self.checkpoint_list = arcade.SpriteList()
@@ -203,13 +225,11 @@ class GameView(arcade.View):
 		#load map from map editor
 
 		#name of map file to load
-		map_name = "map/map_overworld.tmx"
+		map_name = "map/world_map.tmx"
 		#name of the layer in the file that has the platform
 		platforms_layer_name = 'Platforms'
-		moving_platforms_layer_name = 'Moving Platforms'
 		ladders_layer_name = 'Ladders'
 		invisible_platform_layer_name = 'Invisible Platforms'
-		scalable_wall_layer_name = 'Scalable'
 
 		#layer containing background items
 		background_layer_name = 'Background'
@@ -243,11 +263,6 @@ class GameView(arcade.View):
 													  layer_name = platforms_layer_name,
 													  scaling = TILE_SCALING)
 
-		#brings in scalable walls
-		self.scalable_wall_list = arcade.tilemap.process_layer(map_object= my_map,
-																layer_name=scalable_wall_layer_name,
-																scaling = TILE_SCALING)
-
 		#brings in ladder tiles
 		self.ladder_list = arcade.tilemap.process_layer(map_object = my_map,
 														layer_name = ladders_layer_name,
@@ -258,10 +273,6 @@ class GameView(arcade.View):
 														layer_name = water_layer_name,
 														scaling = TILE_SCALING)
 
-		#brings in moving platforms
-		self.moving_platform_list = arcade.tilemap.process_layer(map_object = my_map,
-																 layer_name = moving_platforms_layer_name,
-																 scaling = TILE_SCALING)
 
 		#brings in general enemies
 		self.enemy_list = arcade.tilemap.process_layer(map_object= my_map,
@@ -292,8 +303,6 @@ class GameView(arcade.View):
 		self.all_platform_list = arcade.SpriteList(use_spatial_hash=True)
 		for platform in self.wall_list:
 			self.all_platform_list.append(platform)
-		for scalable in self.scalable_wall_list:
-			self.all_platform_list.append(scalable)
 
 		if my_map.background_color:
 			arcade.set_background_color(my_map.background_color)
@@ -441,11 +450,9 @@ class GameView(arcade.View):
 		self.background_list.draw()
 		self.water_list.draw()
 		self.wall_list.draw()
-		self.scalable_wall_list.draw()
 		self.ladder_list.draw()
 		self.checkpoint_list.draw()
 		self.player_list.draw()
-		self.moving_platform_list.draw()
 		self.bullet_list.draw()
 		self.enemy_list.draw()
 		self.projectile_enemy_list.draw()
@@ -550,12 +557,6 @@ class GameView(arcade.View):
 			elif enemy.change_x == 0:
 				enemy.change_x = ENEMY_PATROL_SPEED
 
-		#build double jump	
-		if arcade.check_for_collision_with_list(self.player_sprite, self.scalable_wall_list) == True:
-			self.player_sprite.change_y = PLAYER_DASH_SPEED
-			print(self.player_sprite.change_y)
-			print('Collision detected')
-			self.physics_engine.can_jump()
 
 		self.frame_count +=1
 		for enemy in self.projectile_enemy_list:
