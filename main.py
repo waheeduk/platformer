@@ -16,8 +16,6 @@ PLAYER_JUMP_SPEED = 10
 PLAYER_DASH_SPEED = 20
 GRAVITY = 0.5
 FLUID_GRAVITY = 0.1
-START_X = 64
-START_Y = (12*GRID_SIZE) +32
 LASER_SPEED = 25
 
 #enemy constants
@@ -114,6 +112,8 @@ class MyGame(arcade.Window):
 
 		#track player state
 		self.in_fluid = False
+		self.START_X = 64
+		self.START_Y = (12*GRID_SIZE) +32
 
 		#track current state of what key is pressed
 		self.left_pressed = False
@@ -173,8 +173,8 @@ class MyGame(arcade.Window):
 
 		#sets up the player and drops it at a location
 		self.player_sprite = PlayerCharacter()
-		self.player_sprite.center_x = START_X
-		self.player_sprite.center_y = START_Y
+		self.player_sprite.center_x = self.START_X
+		self.player_sprite.center_y = self.START_Y
 		self.player_list.append(self.player_sprite)
 
 
@@ -430,8 +430,8 @@ class MyGame(arcade.Window):
 
 	def reset_position(self):
 		#move the player to start
-		self.player_sprite.center_x = START_X
-		self.player_sprite.center_y = START_Y
+		self.player_sprite.center_x = self.START_X
+		self.player_sprite.center_y = self.START_Y
 
 		#reset camera to start
 		self.view_left = 0
@@ -569,17 +569,14 @@ class MyGame(arcade.Window):
 		if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_laser_list):
 			self.reset_position()
 
-		#checks to see if player has hit checkpoint, and then alters the player
-		#starting coordinates
-		#for n in len checkpoint list
-		#if player sprite collides with checkpoint n
-		#start x and start y equal checkpoint n center x and checkpoint n center y
+		#checks to see if the player hit the checkpoint, in which case their
+		#starting coordinates are reset to the checkpoint
 		if arcade.check_for_collision_with_list(self.player_sprite, self.checkpoint_list):
 			print('checkpoint collision detectedd')
 			#coordinates should roughly be 2400, 992
-			START_X = self.checkpoint_list[0].center_x
-			START_Y = self.checkpoint_list[0].center_y
-			print(START_X)
+			self.START_X = self.checkpoint_list[0].center_x
+			self.START_Y = self.checkpoint_list[0].center_y
+			print(self.START_X)
 
 		# Track if we need to change the viewport
 		changed = False
