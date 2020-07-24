@@ -6,7 +6,7 @@ Need to create enemies DONE
 Need to create ability gems, which once collected allow for one use of ability DONE
 Need to create enemy projectiles DONE
 Need to create health system DELETED
-Need to create checkpoint system 
+Need to create checkpoint system DONE
 Need to create character selection DELETED
 Need to create objectives and collectibes
 Need to create timer and high score
@@ -14,24 +14,14 @@ Need to create swim mechanic as bonus DONE
 Need to refactor code
 
 bugs:
-start x is changed to checkpoint center but player still starts at origin
 player is almost invisible underwater!!
-enemies are not vulnerable to their own lasers
 need to create visual feedback to show player taking damage/dying
 wall jumps are not working
 code it so player cannot go over/behind wall, code this in without physics engine
-
-if playersprite.left hits scalable.left or scalable.right:
-player.spritechangex = -dash seed or dash speed
-use list comprehensions
-
-phsyics engine operates as usual
-perhaps inspect the physics engine
-or if player sprite collides with scalable wall the jump reset is false
 hearts are not properly moving across screen
 hearts position needs to be moved with change_x and change_y
 perhaps make the heart a sprite that moves like the player
-differentt tier health for enemies
+different tier health for enemies
 gems and enemies do not reset, i.e. if you die they're not resurrected
 fix when implementing health/hearts
 if hearts = 0

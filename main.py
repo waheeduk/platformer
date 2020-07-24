@@ -318,7 +318,7 @@ class MyGame(arcade.Window):
 			self.player_sprite.change_x = -PLAYER_DASH_SPEED
 		
 		#process shooting
-		if self.shoot_pressed and self.left_pressed:
+		if self.shoot_pressed and self.left_pressed and self.ability_count > 0:
 			#creates laser
 			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
 			#position the laser
@@ -327,7 +327,9 @@ class MyGame(arcade.Window):
 			#gives laser speed and direction
 			laser.change_x = -LASER_SPEED
 			self.bullet_list.append(laser)
-		elif self.shoot_pressed:
+			#removes ability after being used once
+			self.ability_count -=1
+		elif self.shoot_pressed and self.ability_count > 0:
 			#creates laser
 			laser = arcade.Sprite("art/PNG/lasers/laserBlueHorizontal.png", scale=LASER_SCALING)
 			#position the laser
@@ -336,6 +338,8 @@ class MyGame(arcade.Window):
 			#gives laser speed and direction
 			laser.change_x = LASER_SPEED
 			self.bullet_list.append(laser)
+			#removes ability after being used once
+			self.ability_count -=1
 
 		#process swimming
 		if self.in_fluid == True:
