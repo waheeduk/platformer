@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="64" tileheight="64" infinite="0" nextlayerid="9" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="64" tileheight="64" tilecount="18" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="64" height="64" source="../art/PNG/Other/fluidBrown.png"/>
+  </tile>
+  <tile id="1">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_03.png"/>
+  </tile>
+  <tile id="4">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_04.png"/>
+  </tile>
+  <tile id="5">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_06.png"/>
+  </tile>
+  <tile id="6">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_05.png"/>
+  </tile>
+  <tile id="7">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_11.png"/>
+  </tile>
+  <tile id="8">
+   <image width="64" height="64" source="../art/PNG/Tiles/Green tiles/tileGreen_12.png"/>
+  </tile>
+  <tile id="9">
+   <image width="56" height="64" source="../art/PNG/Other/ladderNarrow_mid.png"/>
+  </tile>
+  <tile id="10">
+   <image width="56" height="48" source="../art/PNG/Other/ladderNarrow_top.png"/>
+  </tile>
+  <tile id="11">
+   <image width="64" height="64" source="../art/PNG/Tiles/Brown tiles/tileBrown_09.png"/>
+  </tile>
+  <tile id="12">
+   <image width="42" height="40" source="../art/PNG/Enemies/enemyFloating_1.png"/>
+  </tile>
+  <tile id="13">
+   <image width="64" height="64" source="../art/PNG/Other/fluidBlue.png"/>
+  </tile>
+  <tile id="14">
+   <image width="64" height="64" source="../art/PNG/Other/fluidBlue_top.png"/>
+  </tile>
+  <tile id="15">
+   <image width="64" height="38" source="../art/PNG/Enemies/enemyFlying_1.png"/>
+  </tile>
+  <tile id="16">
+   <image width="64" height="64" source="../art/PNG/Other/doorOpen.png"/>
+  </tile>
+  <tile id="17">
+   <image width="59" height="61" source="../art/PNG/Other/flagGreen_up.png"/>
+  </tile>
+  <tile id="18">
+   <image width="64" height="64" source="../art/PNG/Other/blockBrown.png"/>
+  </tile>
+  <tile id="19">
+   <image width="22" height="22" source="../art/PNG/Items/yellowGem.png"/>
+  </tile>
+ </tileset>
+ <layer id="1" name="Platforms" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztlMEKACEIRGsv7b3//9cl6BQSmo7G4oO59hq0Skk8aTM9+B4e/rbE27/D0r/rKfW/xHlUtFD+4X5m0Kx+635Svze3+FH7xfVLQO+/FM19EPPn/BueMx4g95zT55Z3ZsHJ7P7UH+GXvhlNKGdV9tNQ05/+9If7I/MBJN4D+g==
+  </data>
+ </layer>
+ <layer id="2" name="Ladders" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzbENAAAEADAz//9rdoAYtA80AgAA2FLHf/r9j3+mBurwAEg=
+  </data>
+ </layer>
+ <layer id="3" name="Invisible Platforms" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt1EsKACAIQMEO4P3P2z7wQ6YFvYE2GYGajQEAALIksQf8jll5m9efNX66d6IsK16tOmfv3q6ctdp3zmfkf7DeY/RO66yX/63a7Jg2mgJZ
+  </data>
+ </layer>
+ <layer id="4" name="Enemies" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt07EJADAIBMAs4P7rpkgvCBJIvKvETl/XAgC6RLEPHH7kDVlOEzO8MfPEvWa6bjCK9S82Je4Aqg==
+  </data>
+ </layer>
+ <layer id="5" name="Water" width="32" height="32" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztzaERAEAIBDEqgP67ffMWe5hkZvVWAQAAKR1sfsmnpL1rDzYxDgM=
+  </data>
+ </layer>
+ <layer id="6" name="Projectile Enemies" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF+IAAGk0vO2GY3gCbnfQKg4Hw7ygYumAg8wkpAN19g929o2AUjIJRMApGwUAA9PbmcKgvifUDLr8P9jAYKm2xUYAKADaDAZE=
+  </data>
+ </layer>
+ <layer id="7" name="Checkpoint" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAADwbhAAAAE=
+  </data>
+ </layer>
+ <layer id="8" name="Gems" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt1CEKAAAIA0Af4f/fajeYxCB3bZgGwwigyyH32wcfO7HLRoBr/g7AvgIyWwB5
+  </data>
+ </layer>
+</map>
