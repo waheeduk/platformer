@@ -93,16 +93,37 @@ class PlayerCharacter(arcade.Sprite):
 			self.cur_texture = 1
 		self.texture = self.run_textures[self.cur_texture//UPDATES_PER_FRAME][self.character_face_direction]
 
+class MenuView(arcade.View):
+	"""class that handles the menu view"""
+	def on_show(self):
+		"""called when switching to this view"""
+		arcade.set_background_color(arcade.color.WHITE)
 
-class MyGame(arcade.Window):
+	def on_draw(self):
+		"""draw the menu"""
+		arcade.start_render()
+		arcade.draw_text("NAPP", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.BLACK, font_size = 60,
+		anchor_x = "center")
+		arcade.draw_text("Not Another Puzzle Platformer", SCREEN_WIDTH/2, 
+		SCREEN_HEIGHT/2 - 70, arcade.color.BLACK, font_size= 30, anchor_x= "center")
+		arcade.draw_text("Press enter to start the game", SCREEN_WIDTH/2,
+		SCREEN_HEIGHT - 500, arcade.color.BLACK, font_size=20, anchor_x="center")
+
+	def on_key_press(self, key, modifiers):
+		"""use mouse to advance game"""
+		if key == arcade.key.ENTER:
+			game_view = GameView()
+			game_view.setup()
+			self.window.show_view(game_view)
+
+class GameView(arcade.View):
 	"""
 	Main application class
 	"""
 
 	def __init__(self):
 		#call parent class
-		super().__init__(SCREEN_WIDTH,SCREEN_HEIGHT, SCREEN_TITLE)
-		arcade.set_background_color(arcade.csscolor.AZURE)
+		super().__init__()
 
 		#keeps track of frames
 		self.frame_count = 0
@@ -282,6 +303,9 @@ class MyGame(arcade.Window):
 															 self.all_platform_list,
 															 gravity_constant = GRAVITY,
 															 ladders = self.ladder_list)
+
+	def on_show(self):
+		arcade.set_background_color(arcade.csscolor.AZURE)
 
 	def process_keychange(self):
 		# Process up/down
@@ -631,8 +655,9 @@ class MyGame(arcade.Window):
 
 def main():
 	"""main method"""
-	window = MyGame()
-	window.setup()
+	window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT)
+	menu_view = MenuView()
+	window.show_view(menu_view)
 	arcade.run()
 
 if __name__ == "__main__":
