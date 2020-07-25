@@ -15,7 +15,7 @@ PLAYER_SWIM_SPEED = 2
 PLAYER_JUMP_SPEED = 15
 PLAYER_DASH_SPEED = 15
 GRAVITY = 0.5
-FLUID_GRAVITY = 0.1
+FLUID_GRAVITY = 0.3
 LASER_SPEED = 25
 
 #enemy constants
@@ -121,15 +121,15 @@ class InstructionsView(arcade.View):
 
 	def on_draw(self):
 		arcade.start_render()
-		arcade.draw_text("Play through the level and find the stars. Jump your way across platforms.", 
+		arcade.draw_text("Play through the level and find the golden star. Jump your way across platforms.", 
 		SCREEN_WIDTH/2, SCREEN_HEIGHT-50, arcade.color.BLACK, font_size= 20, anchor_x= "center")
-		arcade.draw_text("E to parry an enemy laser. Enter to fire a laser. Space to dash.", SCREEN_WIDTH/2, 
+		arcade.draw_text("Use WASD or the arrow keys to move and jump.", SCREEN_WIDTH/2, 
 		SCREEN_HEIGHT-100, arcade.color.BLACK, font_size= 20, anchor_x= "center")
-		arcade.draw_text("Find yellow gems to unlock special abilities", SCREEN_WIDTH/2,
+		arcade.draw_text("Find red gems to unlock special abilities. These include:", SCREEN_WIDTH/2,
 		SCREEN_HEIGHT -150, arcade.color.BLACK, font_size=20, anchor_x="center")
-		arcade.draw_text("WASD or arrows to move and jump.", SCREEN_WIDTH/2,
+		arcade.draw_text("SPACE to dash. E to deflect lasers. ENTER to shoot.", SCREEN_WIDTH/2,
 		SCREEN_HEIGHT -200, arcade.color.BLACK, font_size=20, anchor_x="center")
-		arcade.draw_text("E to parry an enemy laser. Enter to fire a laser. Space to dash.", SCREEN_WIDTH/2,
+		arcade.draw_text("But you only get one ability use per gem. Good luck out there.", SCREEN_WIDTH/2,
 		SCREEN_HEIGHT -250, arcade.color.BLACK, font_size=20, anchor_x="center")
 		arcade.draw_text("Press ENTER to start the game!", SCREEN_WIDTH/2,
 		SCREEN_HEIGHT - 300, arcade.color.BLACK, font_size=20, anchor_x="center")
@@ -154,7 +154,6 @@ class GameView(arcade.View):
 		self.frame_count = 0
 
 		self.ability_count = 0
-		self.heart_count = 3
 
 		#track player state
 		self.in_fluid = False
@@ -180,9 +179,8 @@ class GameView(arcade.View):
 		self.ladder_list = None
 		self.gem_list = None
 		self.checkpoint_list = None
-		self.heart_list = None
+		self.objective_list = None
 
-		self.heart_sprite = None
 
 		self.player_sprite = None
 		self.physics_engine = None 
@@ -210,9 +208,10 @@ class GameView(arcade.View):
 		self.projectile_enemy_list = arcade.SpriteList()
 		self.enemy_laser_list = arcade.SpriteList()
 		self.invisible_platform_list = arcade.SpriteList()
-		self.heart_list = arcade.SpriteList()
 		self.checkpoint_list = arcade.SpriteList()
 		self.gem_list = arcade.SpriteList()
+		self.objective_list = arcade.SpriteList()
+
 		self.ability_reset_count = 0
 
 		#sets up the player and drops it at a location
@@ -247,6 +246,9 @@ class GameView(arcade.View):
 
 		#layer containing gems
 		gem_layer_name = 'Gems'
+
+		#layer containing the objective
+		objective_layer_name = 'Objective'
 
 		#read in tiled map
 		my_map = arcade.tilemap.read_tmx(map_name)
@@ -298,6 +300,12 @@ class GameView(arcade.View):
 		self.gem_list = arcade.tilemap.process_layer(map_object=my_map,
 													layer_name= gem_layer_name,
 													scaling=TILE_SCALING)
+
+		#brings in the objective
+		self.objective_list = arcade.tilemap.process_layer(map_object=my_map,
+		layer_name=objective_layer_name,
+		scaling=TILE_SCALING)
+
 
 		#creates a list of all the platforms that the physics engine takes a note of
 		self.all_platform_list = arcade.SpriteList(use_spatial_hash=True)
@@ -457,12 +465,10 @@ class GameView(arcade.View):
 		self.enemy_list.draw()
 		self.projectile_enemy_list.draw()
 		self.gem_list.draw()
+		self.objective_list.draw()
 		self.enemy_laser_list.draw()
-		#creates hearts to show the player lives
 		#move to draw function and draw individually
 
-		# self.heart_list.draw()
-		self.heart_sprite.draw()
 
 	def reset_position(self):
 		#move the player to start
@@ -474,7 +480,6 @@ class GameView(arcade.View):
 		self.view_bottom = 0
 		changed_viewport = 0
 		self.ability_count += self.ability_reset_count
-		self.heart_count -= 1
 		self.ability_reset_count = 0
 
 	def on_update(self, delta_time):
@@ -533,9 +538,6 @@ class GameView(arcade.View):
 				for enemy in projectile_enemy_hit_list:
 					enemy.remove_from_sprite_lists()
 				continue
-
-		#initialise the heart sprite
-		self.heart_sprite = arcade.Sprite("art/PNG/Other/heart.png", scale=LASER_SCALING, center_x= -188, center_y= 346)
 
 		#check to see if gems were contacted by player sprite, in which case the 
 		#player gains an ability point
@@ -615,6 +617,11 @@ class GameView(arcade.View):
 			self.START_Y = self.checkpoint_list[0].center_y
 			print(self.START_X)
 
+		#checks to see if player has found the objective and has won the game!
+		if arcade.check_for_collision_with_list(self.player_sprite, self.objective_list):
+			win_view = WinView()
+			self.window.show_view(win_view)
+
 		# Track if we need to change the viewport
 		changed = False
 
@@ -653,6 +660,27 @@ class GameView(arcade.View):
 								SCREEN_WIDTH + self.view_left,
 								self.view_bottom,
 								SCREEN_HEIGHT + self.view_bottom)
+
+class WinView(arcade.View):
+	"""class containing the game won screen"""
+	def on_show(self):
+		arcade.set_background_color(arcade.color.WHITE)
+
+	def on_draw(self):
+		arcade.start_render()
+		arcade.draw_text("Congratulations! You found the star and beat the game!", 
+		SCREEN_WIDTH/2, SCREEN_HEIGHT-100, arcade.color.BLACK, font_size= 30, anchor_x= "center")
+		arcade.draw_text("Press R to restart or press ESC to quit.", SCREEN_WIDTH/2, 
+		SCREEN_HEIGHT/2, arcade.color.BLACK, font_size= 15, anchor_x= "center")
+
+	def on_key_press(self, key, modifiers):
+		"""use mouse to advance game"""
+		if key == arcade.key.R:
+			game_view = GameView()
+			game_view.setup()
+			self.window.show_view(game_view)
+		elif key == arcade.key.ESCAPE:
+			arcade.close_window()
 
 def main():
 	"""main method"""

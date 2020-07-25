@@ -1,40 +1,5 @@
-Have basic outline of game DONE
-Need to mirror animation images so sprite faces left and right DONE
-Need to create dash mechanic DONE
-Need to create wall jump mechanic DELETED
-Need to create enemies DONE
-Need to create ability gems, which once collected allow for one use of ability DONE
-Need to create enemy projectiles DONE
-Need to create health system DELETED
-Need to create checkpoint system DONE
-Need to create character selection DELETED
-Need to create objective 
-Need to create timer and high score
-Need to create swim mechanic as bonus DONE
-Need to create start screen, pause screen, menus, ui 
 Need to refactor code
-Jump on enemy heads to kill them?
 
 bugs:
-need to create visual feedback to show player taking damage/dying
-need to allow player to be hit three times
-enemy lasers fire too quickly
-viewport needs to be higher as the game is very vertical
 need to fix music
-instructions unclear
-
-scoring
-3 for regular enemies
-5 for laser enemies
-2 for every gem collected
-10 for the big gem
-+2 for every second below average completion
--1 for every second above average completion time
--100 if not completed
-
-highscore table
-
-
-remove hearts
-
-different tier health for enemies
+tune gravity underwater
