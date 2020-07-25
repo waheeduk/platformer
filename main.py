@@ -175,7 +175,6 @@ class GameView(arcade.View):
 		self.coin_list = None
 		self.player_list = None
 		self.bullet_list = None
-		self.background_list = None
 		self.ladder_list = None
 		self.gem_list = None
 		self.checkpoint_list = None
@@ -201,7 +200,6 @@ class GameView(arcade.View):
 		self.player_list = arcade.SpriteList()
 		self.bullet_list = arcade.SpriteList()
 		self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-		self.background_list = arcade.SpriteList()
 		self.water_list = arcade.SpriteList()
 		self.ladder_list = arcade.SpriteList()
 		self.enemy_list = arcade.SpriteList()
@@ -230,8 +228,6 @@ class GameView(arcade.View):
 		ladders_layer_name = 'Ladders'
 		invisible_platform_layer_name = 'Invisible Platforms'
 
-		#layer containing background items
-		background_layer_name = 'Background'
 		#layer containing items that will cause death and a reset
 		water_layer_name = 'Water'
 
@@ -252,11 +248,6 @@ class GameView(arcade.View):
 
 		#read in tiled map
 		my_map = arcade.tilemap.read_tmx(map_name)
-
-		#brings in background tiles
-		self.background_list = arcade.tilemap.process_layer(my_map,
-															background_layer_name,
-															TILE_SCALING)
 		
 
 
@@ -455,7 +446,6 @@ class GameView(arcade.View):
 	def on_draw(self):
 		"""render the screen"""
 		arcade.start_render()
-		self.background_list.draw()
 		self.water_list.draw()
 		self.wall_list.draw()
 		self.ladder_list.draw()
@@ -668,7 +658,7 @@ class WinView(arcade.View):
 
 	def on_draw(self):
 		arcade.start_render()
-		arcade.draw_text("Congratulations! You found the star and beat the game!", 
+		arcade.draw_text("Congratulations!", 
 		SCREEN_WIDTH/2, SCREEN_HEIGHT-100, arcade.color.BLACK, font_size= 30, anchor_x= "center")
 		arcade.draw_text("Press R to restart or press ESC to quit.", SCREEN_WIDTH/2, 
 		SCREEN_HEIGHT/2, arcade.color.BLACK, font_size= 15, anchor_x= "center")
