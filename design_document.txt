@@ -18,8 +18,10 @@ Jump on enemy heads to kill them?
 bugs:
 need to create visual feedback to show player taking damage/dying
 need to allow player to be hit three times
-
+enemy lasers fire too quickly
+viewport needs to be higher as the game is very vertical
 need to fix music
+instructions unclear
 
 scoring
 3 for regular enemies

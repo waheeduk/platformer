@@ -69,12 +69,12 @@
  </layer>
  <layer id="3" name="Invisible Platforms" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt1EsKACAIQMEO4P3P2z7wQ6YFvYE2GYGajQEAALIksQf8jll5m9efNX66d6IsK16tOmfv3q6ctdp3zmfkf7DeY/RO66yX/63a7Jg2mgJZ
+   eJxjYBgFwxHwECk21MFI8ecoGAWjYPADYsuj0TJqFIwCTDCaVwY3IBQ/6PLUjjseHBifPK0Brf1MyFx6+RlX2NMzfxJTPuBLj8SaiU8tIf8PVNiQAwDGmAKJ
   </data>
  </layer>
  <layer id="4" name="Enemies" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt07EJADAIBMAs4P7rpkgvCBJIvKvETl/XAgC6RLEPHH7kDVlOEzO8MfPEvWa6bjCK9S82Je4Aqg==
+   eJxjYBgFwxnwDrQD6AhGkl9HwSgYBYMX4CqLRsuoUTAK8IPRPDI0AL54GolxSA8/j8RwxQeolQaJUTscwx4AceUAqg==
   </data>
  </layer>
  <layer id="5" name="Water" width="32" height="32" visible="0">
@@ -94,7 +94,7 @@
  </layer>
  <layer id="8" name="Gems" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt1CEKAAAIA0Af4f/fajeYxCB3bZgGwwigyyH32wcfO7HLRoBr/g7AvgIyWwB5
+   eJzt1LEJAEAIA0CHcP9ZbR+xlC/kDlJYBoIRQJfD/eaai53YZSPAb/4OwL4CM0kAoQ==
   </data>
  </layer>
 </map>
